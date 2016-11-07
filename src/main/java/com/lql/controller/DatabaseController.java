@@ -39,7 +39,7 @@ public class DatabaseController {
     List<TableData> tableDatas;
     logger.debug("executeSql");
     if (MyUtils.isEmpty(sql)) {
-      model.addAttribute("info", "输入为空,请输入sql语句");
+      model.addAttribute("info", "输入为空,请输入sql语句!!!");
     } else {
       try {
         tableDatas = databaseService.executeSql(sql);

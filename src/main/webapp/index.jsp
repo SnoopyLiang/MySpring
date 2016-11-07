@@ -103,6 +103,7 @@
                     </tr>
                 </c:forEach>
             </table>
+
             <table border="2px">
                 <c:forEach var="tableData" items="${tableDatas}">
                     <tr style="width:auto;">
