@@ -1,5 +1,10 @@
-target
-.iml
-.ipr
-.iws
+.git
 .idea
+target
+*.iml
+*.ipr
+*.class
+# Package Files #
+*.jar
+*.war
+*.ear

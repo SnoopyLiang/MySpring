@@ -23,7 +23,7 @@
 
     <!-- 配置jdbc模板 -->
     <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
-        <property name="dataSource" ref="dataSource"></property>
+        <property name="dataSource" ref="dataSource"/>
     </bean>
 
 </beans>

@@ -1,9 +1,77 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" isELIgnored="false" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<script src="http://lib.sinaapp.com/js/jquery/1.9.1/jquery-1.9.1.min.js"></script>
 <script type="text/javascript">
-    function showTableName() {
-        window.location.href = "/data/listTableName";
+    function executeSql() {
+        var sql = document.getElementById("sqlTextarea").value;
+        console.log(sql);
+        if (sql.length == 0) {
+            document.getElementById("info").innerHTML = "<h3>请输入sql语句</h3>";
+            document.getElementById("fieldName").innerHTML = "";
+            document.getElementById("mainbottom").innerHTML = "";
+        } else {
+            $.ajax({
+                url: "/data/executeSql?sql=" + sql,
+                type: "get",
+                dataType: "json",
+                contentType: "application/json",
+                success: function (data) {
+                    document.getElementById("info").innerHTML = "";
+                    var mainbottom = document.getElementById("mainbottom");
+                    var html = "";
+                    var fieldName = document.getElementById("fieldName");
+                    var fieldHtml = "";
+                    for (var i = 0; i <= 0; i++) {
+                        fieldHtml = fieldHtml + "<tr>";
+                        for (innerItem in data[i]) {
+                            for (key in data[i][innerItem]) {
+                                fieldHtml = fieldHtml + "<td>" + key + "</td>"
+                            }
+
+                        }
+                        html = html + "</tr>";
+                    }
+                    fieldName.innerHTML = fieldHtml;
+
+                    for (dataItem in data) {
+                        console.log(data[dataItem]);
+                        html = html + "<tr>";
+                        for (innerItem in data[dataItem]) {
+                            console.log(data[dataItem][innerItem]);
+
+                            for (key in data[dataItem][innerItem]) {
+                                console.log(key + ":" + data[dataItem][innerItem][key]);
+                                html = html + "<td>" + data[dataItem][innerItem][key] + "</td>"
+                            }
+
+                        }
+                        html = html + "</tr>";
+                    }
+                    mainbottom.innerHTML = html;
+                }
+
+            })
+        }
     }
+
+    function showTableName() {
+        $.ajax({
+            url: "/data/listTableName",
+            type: "get",
+            dataType: "json",
+            contentType: "application/json",
+            success: function (data) {
+                var mainleft = document.getElementById("mainleft");
+                mainleft.innerHTML = "";
+                for (tableName in data) {
+                    var html = document.getElementById("mainleft").innerHTML;
+                    mainleft.innerHTML = html + "<tr><td>" + data[tableName] + "</td></tr>";
+                }
+            }
+
+        })
+    }
+
 </script>
 <html>
 <style type="text/css">
@@ -12,16 +80,12 @@
         padding: 0;
     }
 
+    td {
+        width: 50px;
+    }
+
     body {
         font: 12px "微软雅黑";
-    }
-
-    a {
-        text-decoration: none;
-    }
-
-    form, button {
-        border: 0;
     }
 
     #main {
@@ -71,47 +135,28 @@
 <body>
 <div id="main">
     <div class="main_left">
-        <a href="/data/listTableName" onmouseover="showTableName()">查询所有数据表</a>
-        <table border="2px">
-            <c:forEach items="${tableNameList }" var="tableName">
-                <tr>
-                    <td style="width: 50px">${tableName }</td>
-                </tr>
-            </c:forEach>
+        <input type="button" value="查询所有数据表" onclick="showTableName()">
+        <table id="mainleft" border="2px">
         </table>
     </div>
     <div class="main_right">
-        <form action="/data/executeSql">
-            <div class="main_top">
-                <div class="top_left">
-                    <input id="sqlTextarea" name="sql"></input>
-                </div>
-                <div class="top_right">
-                    <input id="execute" type="submit" value="提交"/>
-                </div>
+        <div class="main_top">
+            <div class="top_left">
+                <input id="sqlTextarea" type="text" name="sql"></input>
             </div>
-        </form>
+            <div class="top_right">
+                <input id="execute" type="button" value="提交" onclick="executeSql()"/>
+            </div>
+        </div>
 
         <div class="main_bottom">
-            <c:if test="${not empty info}">${info}</c:if>
-            <table border="2px">
-                <c:forEach var="tableData" items="${tableDatas}" begin="0" end="0">
-                    <tr>
-                        <c:forEach var="dataItem" items="${tableData.data}">
-                            <td style="width: 50px">${dataItem.key}</td>
-                        </c:forEach>
-                    </tr>
-                </c:forEach>
+            <div id="info">
+            </div>
+
+            <table border="2px" id="fieldName">
             </table>
 
-            <table border="2px">
-                <c:forEach var="tableData" items="${tableDatas}">
-                    <tr style="width:auto;">
-                        <c:forEach var="dataItem" items="${tableData.data}">
-                            <td style="width: 50px">${dataItem.value}</td>
-                        </c:forEach>
-                    </tr>
-                </c:forEach>
+            <table border="2px" id="mainbottom">
             </table>
         </div>
     </div>
